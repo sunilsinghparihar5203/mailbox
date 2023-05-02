@@ -1,27 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { AuthContext } from "../Context/Context";
 
-function Signup() {
+function Login() {
   const emailRef = useRef();
   const passRef = useRef();
-  const conformPassRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const AuthCtx = useContext(AuthContext);
+  const history = useHistory()
 
   const saveUser = (e) => {
     e.preventDefault();
     setIsLoading(true);
     const email = emailRef.current.value;
     const password = passRef.current.value;
-    const conformPassword = conformPassRef.current.value;
-
-    if (password !== conformPassword) {
-      alert("password not matching.");
-      return;
-    }
-
+   
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAtQzwkxZ-YE5FObjI37AozxYXHXsy7ydk`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAtQzwkxZ-YE5FObjI37AozxYXHXsy7ydk`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -36,14 +32,16 @@ function Signup() {
     )
       .then((res) => {
         if (res.ok) {
-          alert("user created!");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data.error.message) {
-          console.log({ data: data });
-          throw new Error(data.error.message);
+          console.log("Successfully logged in");
+          return res.json().then((data) => {
+            console.log({ datainside: data });
+            AuthCtx.login(data.idToken)
+            history.push('/home')
+          });
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.error.message);
+          });
         }
       })
       .catch((err) => {
@@ -63,7 +61,7 @@ function Signup() {
               <Card.Body>
                 <div className="mb-3 mt-md-4">
                   <h2 className="fw-bold mb-2 text-center text-uppercase ">
-                    Signup
+                    Login
                   </h2>
                   <div className="mb-3">
                     <Form onSubmit={saveUser}>
@@ -89,33 +87,22 @@ function Signup() {
                           required
                         />
                       </Form.Group>
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicPassword"
-                      >
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder="Password"
-                          ref={conformPassRef}
-                          required
-                        />
-                      </Form.Group>
+
                       <Form.Group
                         className="mb-3"
                         controlId="formBasicCheckbox"
                       ></Form.Group>
                       <div className="d-grid">
                         <Button variant="primary" type="submit">
-                          {!isLoading ? "Create Account" : "Creating...."}
+                          {!isLoading ? "Login in" : "Loggin in"}
                         </Button>
                       </div>
                     </Form>
                     <div className="mt-3">
                       <p className="mb-0  text-center">
-                        Create a new account!{" "}
-                        <Link to="/login" className="text-primary fw-bold">
-                          Login
+                        Already have an account?{" "}
+                        <Link to="/signup" className="text-primary fw-bold">
+                          Signup
                         </Link>
                       </p>
                     </div>
@@ -130,4 +117,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Login;
