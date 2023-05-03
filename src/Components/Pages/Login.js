@@ -35,7 +35,7 @@ function Login() {
           console.log("Successfully logged in");
           return res.json().then((data) => {
             console.log({ datainside: data });
-            AuthCtx.login(data.idToken)
+            AuthCtx.login(data.idToken,data.email)
             history.push('/home')
           });
         } else {

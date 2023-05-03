@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import Signup from "./Components/Pages/Signup";
 import Login from "./Components/Pages/Login";
 
-import Home from "./Components/Context/Home";
+import Home from "./Components/Pages/Home";
 
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="/home">
+        <Route path="/">
           <Home />
         </Route>
       </Switch>
