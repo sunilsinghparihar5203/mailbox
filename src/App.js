@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import Header from "./Components/Header/Header";
 import { Route, Switch } from "react-router-dom";
 import Signup from "./Components/Pages/Signup";

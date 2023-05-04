@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { Button, Form } from "react-bootstrap";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState,convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -27,10 +27,10 @@ function Compose() {
     const emailFrom = AuthCtx.email;
     const emailTo = emailRef.current.value;
     const subject = subjRef.current.value;
-    const username = emailFrom.split("@")[0];
+    // const username = emailFrom.split("@")[0];
 
     const response = await fetch(
-      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/${username}.json`,
+      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -41,6 +41,7 @@ function Compose() {
           Stared: false,
           Important: false,
           Trash: false,
+          Date:new Date(),
         }),
         headers: {
           "Content-Type": "application/json",
@@ -51,12 +52,13 @@ function Compose() {
     console.log({ response: response });
     if (response.ok) {
       const data = await response.json();
-      console.log({ data: data });
+      console.log({ successdata: data });
       alert("Sent");
       return data;
     } else {
+      const data = await response.json();
+      console.log({ Errordata: data });
       alert("Error");
-      return response.ok;
     }
   };
 
