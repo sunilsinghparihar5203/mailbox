@@ -8,7 +8,7 @@ import EmailsList from "./EmailsList";
 import ReadEmail from "./ReadEmail";
 
 function Home() {
-  const [data, setdata] = useState([]);
+  const [data, setdata] = useState([{'1':'one'}]);
   const [Unread, setUnread] = useState(0);
   const [isLoading, setisLoading] = useState(true);
   const AuthCtx = useContext(AuthContext);
@@ -41,10 +41,7 @@ function Home() {
   }
 
   const FetchEmails = async () => {
-    const response = await fetch(
-      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`
-    );
-
+    const response = await fetch(`https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`);
     console.log({ response: response });
     if (response.ok) {
       const data = await response.json();
@@ -64,7 +61,7 @@ function Home() {
         <Sidebar Unread={Unread}/>
         <Switch>
           <Route path="/inbox" exact>
-            <EmailsList isLoading={isLoading}  data={data} FetchEmails={FetchEmails}/>
+            <EmailsList  data={data} isLoading={isLoading} FetchEmails={FetchEmails}/>
           </Route>
           <Route path="/inbox/:id" exact>
             <ReadEmail data={data}/>
@@ -73,7 +70,7 @@ function Home() {
             <Compose />
           </Route>
           <Route path="/">
-            <EmailsList />
+            <EmailsList data={data} isLoading={isLoading} FetchEmails={FetchEmails}/>
           </Route>
         </Switch>
       </div>

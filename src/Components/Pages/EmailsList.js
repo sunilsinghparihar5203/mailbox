@@ -6,7 +6,7 @@ function EmailsList({data,isLoading,FetchEmails}) {
 
   useEffect(() => {
     FetchEmails();
-  }, [FetchEmails]);
+  }, []);
 
 
   console.log({ dataAfter: data });

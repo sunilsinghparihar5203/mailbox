@@ -12,12 +12,16 @@ function ReadEmail(props) {
   }, [])
 
   const UpdateEmailToRead = async (data,ID) => {
-    let values = Object.keys(data).map((ObjId) => {
-      if (ObjId === ID) {
-        return data[ID]
+    console.log({data:data,ID:ID})
+    let values = data.map((ObjId) => {
+      let index = data.indexOf(ObjId)
+      if (ObjId.Id === ID) {
+        console.log({indexData:data[index]})
+        return data[index]
       }
     });
 
+    console.log({values:values})
     const response = await fetch(
       `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${ID}.json`,
       {
