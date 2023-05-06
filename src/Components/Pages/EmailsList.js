@@ -1,54 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Email from "./Email";
 import { ListGroup, Row, Col } from "react-bootstrap";
 
-function EmailsList() {
-  const [data, setdata] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
+function EmailsList({data,isLoading,FetchEmails}) {
+
   useEffect(() => {
     FetchEmails();
-    setisLoading(false);
-  }, []);
+  }, [FetchEmails]);
 
-  const modifyArrayForInbox = (obj) =>{
-    let arry = [];
-    Object.entries(obj).map((item) => {
-      let [id, value] = item;
-      let obj = {
-        Id: id,
-        Subject: value.Subject,
-        Content: value.Content,
-      };
-      arry.push(obj);
-    });
-    console.log({ modifiedArrayt: arry });
-    return arry;
-  }
-
-  const FetchEmails = async () => {
-    const response = await fetch(
-      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`
-    );
-
-    console.log({ response: response });
-    if (response.ok) {
-      const data = await response.json();
-      console.log({ successdata: data });
-      setdata(modifyArrayForInbox(data));
-      return data;
-    } else {
-      const data = await response.json();
-      console.log({ Errordata: data });
-      alert("Error");
-    }
-  };
 
   console.log({ dataAfter: data });
   return (
     <div className="container-fluid m-2">
       <p>Inbox</p>
-      {data.length === 0 && !isLoading && <p>No Mail Available</p>}
       {isLoading && <p>Loading..</p>}
+      {!isLoading && (data.length === 0 && <p>No Mail Available</p>)}
       <Row>
         <Col sm={12}>
           <ListGroup as="ul">
@@ -59,6 +25,9 @@ function EmailsList() {
                     Subject={item.Subject}
                     key={item.Id}
                     Content={item.Content}
+                    Read={item.Read}
+                    Date={item.Date}
+                    Id={item.Id}
                   />
                 );
               })}

@@ -41,6 +41,7 @@ function Compose() {
           Stared: false,
           Important: false,
           Trash: false,
+          Read:false,
           Date:new Date(),
         }),
         headers: {

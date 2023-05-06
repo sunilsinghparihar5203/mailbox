@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "../Pages/Home.css";
-import { Button } from "react-bootstrap";
+import { Button,Badge  } from "react-bootstrap";
 import { AuthContext } from "../Context/Context";
-function Sidebar() {
+function Sidebar(props) {
   const AuthCtx = useContext(AuthContext)
 
-  const LogoutHandler = () =>{
+  const LogoutHandler = () => {
     AuthCtx.logout()
   }
   return (
@@ -18,6 +18,9 @@ function Sidebar() {
         <li className="nav-item">
           <Link className="nav-link" to="/inbox">
             Inbox
+            <Badge variant="primary">
+              {props.Unread}
+            </Badge>
           </Link>
         </li>
         <li className="nav-item">
