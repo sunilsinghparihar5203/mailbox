@@ -1,57 +1,45 @@
-import React, { useEffect } from 'react'
-import { Row, Col } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Row, Col, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 function ReadEmail(props) {
   const { id } = useParams();
-
-  console.log({ id: id })
-
+  const values = props.data.find((ObjId) => ObjId.Id === id);
   useEffect(() => {
-    UpdateEmailToRead(props.data,id)
-  }, [])
+    UpdateEmailToRead(values, id);
+  }, []);
 
-  const UpdateEmailToRead = async (data,ID) => {
-    console.log({data:data,ID:ID})
-    let values = data.map((ObjId) => {
-      let index = data.indexOf(ObjId)
-      if (ObjId.Id === ID) {
-        console.log({indexData:data[index]})
-        return data[index]
+  const UpdateEmailToRead = async (values, ID) => {
+    if (values.Read === false) {
+      const response = await fetch(
+        `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${ID}.json`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ ...values, Read: true }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        return response.ok;
       }
-    });
-
-    console.log({values:values})
-    const response = await fetch(
-      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${ID}.json`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          ...values,
-          Read: true
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      console.log({ updateRead: data })
-      return data;
-    } else {
-      return response.ok;
     }
-  }
+  };
   return (
     <>
-      <Row>
-        <Col xs={12}>
-          {id}
-        </Col>
-      </Row>
+      <Container className="p-3">
+        <Row>
+          <Col xs={8}>{values.From}</Col>
+          <Col xs={4}>{values.Date}</Col>
+          <Col xs={12}>{values.Content}</Col>
+        </Row>
+      </Container>
     </>
-  )
+  );
 }
 
-export default ReadEmail
+export default ReadEmail;

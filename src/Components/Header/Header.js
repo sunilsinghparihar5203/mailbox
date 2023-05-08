@@ -1,6 +1,4 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import {Container,Nav,Navbar} from 'react-bootstrap';
 
 function BasicExample() {
   return (
@@ -11,8 +9,6 @@ function BasicExample() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link to="/">Home</Nav.Link>
-            {/* <Nav.Link href="#products">Products</Nav.Link>
-            <Nav.Link href="#about">About Us</Nav.Link> */}
           </Nav>
         </Navbar.Collapse>
       </Container>

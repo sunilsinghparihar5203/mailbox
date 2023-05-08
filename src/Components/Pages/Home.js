@@ -8,7 +8,7 @@ import EmailsList from "./EmailsList";
 import ReadEmail from "./ReadEmail";
 
 function Home() {
-  const [data, setdata] = useState([{'1':'one'}]);
+  const [data, setdata] = useState([{ 1: "one" }]);
   const [Unread, setUnread] = useState(0);
   const [isLoading, setisLoading] = useState(true);
   const AuthCtx = useContext(AuthContext);
@@ -20,10 +20,11 @@ function Home() {
   const modifyArrayForInbox = (obj) => {
     let arry = [];
     let inboxCounter = 0;
+
     Object.entries(obj).map((item) => {
       let [id, value] = item;
-      if(value.Read !== true){
-        inboxCounter++
+      if (value.Read !== true) {
+        inboxCounter++;
       }
       let obj = {
         Id: id,
@@ -31,17 +32,26 @@ function Home() {
         Content: value.Content,
         Read: value.Read,
         Date: value.Date,
+        Trash: value.Trash,
+        From: value.From,
+        To: value.To,
+        Stared: value.Stared,
+        Important: false,
       };
       arry.push(obj);
     });
-    arry.sort((a, b) => Date.parse(new Date(b.Date)) - Date.parse(new Date(a.Date)));
+    arry.sort(
+      (a, b) => Date.parse(new Date(b.Date)) - Date.parse(new Date(a.Date))
+    );
     setisLoading(false);
-    setUnread(inboxCounter)
-    return arry
-  }
+    setUnread(inboxCounter);
+    return arry;
+  };
 
   const FetchEmails = async () => {
-    const response = await fetch(`https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`);
+    const response = await fetch(
+      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`
+    );
     console.log({ response: response });
     if (response.ok) {
       const data = await response.json();
@@ -58,19 +68,27 @@ function Home() {
   return (
     <div className="container bootdey my-2">
       <div className="email-app">
-        <Sidebar Unread={Unread}/>
+        <Sidebar Unread={Unread} />
         <Switch>
           <Route path="/inbox" exact>
-            <EmailsList  data={data} isLoading={isLoading} FetchEmails={FetchEmails}/>
+            <EmailsList
+              data={data}
+              isLoading={isLoading}
+              FetchEmails={FetchEmails}
+            />
           </Route>
           <Route path="/inbox/:id" exact>
-            <ReadEmail data={data}/>
+            <ReadEmail data={data} />
           </Route>
           <Route path="/compose">
             <Compose />
           </Route>
           <Route path="/">
-            <EmailsList data={data} isLoading={isLoading} FetchEmails={FetchEmails}/>
+            <EmailsList
+              data={data}
+              isLoading={isLoading}
+              FetchEmails={FetchEmails}
+            />
           </Route>
         </Switch>
       </div>
