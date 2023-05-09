@@ -28,7 +28,11 @@ function Compose() {
     const emailTo = emailRef.current.value;
     const subject = subjRef.current.value;
     // const username = emailFrom.split("@")[0];
-
+    if(emailFrom === emailTo){
+        alert("change email")
+        emailRef.current.value = "";
+        return ;
+    }
     const response = await fetch(
       `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`,
       {

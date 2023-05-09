@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../Context/Context";
-import { Switch, Route, useHistory,Redirect } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import Sidebar from "../UI/Sidebar";
 import Compose from "../UI/Compose";
 import "./Home.css";
@@ -8,8 +8,8 @@ import EmailsList from "./EmailsList";
 import ReadEmail from "./ReadEmail";
 
 function Home() {
-  const [data, setdata] = useState([{ 1: "one" }]);
-  const [Unread, setUnread] = useState(0);
+  const [InboxData, setInboxData] = useState([]);
+  const [SentData, setSentData] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const AuthCtx = useContext(AuthContext);
   const history = useHistory();
@@ -17,35 +17,44 @@ function Home() {
     history.push("/login");
   }
 
-  const modifyArrayForInbox = (obj) => {
+  const modifyData = (obj) => {
     let arry = [];
     let inboxCounter = 0;
-
-    Object.entries(obj).map((item) => {
-      let [id, value] = item;
-      if (value.Read !== true) {
-        inboxCounter++;
-      }
-      let obj = {
-        Id: id,
-        Subject: value.Subject,
-        Content: value.Content,
-        Read: value.Read,
-        Date: value.Date,
-        Trash: value.Trash,
-        From: value.From,
-        To: value.To,
-        Stared: value.Stared,
-        Important: false,
-      };
-      arry.push(obj);
-    });
-    arry.sort(
-      (a, b) => Date.parse(new Date(b.Date)) - Date.parse(new Date(a.Date))
-    );
+    if (obj) {
+      Object.entries(obj).map((item) => {
+        let [id, value] = item;
+        if (value.Read !== true) {
+          inboxCounter++;
+        }
+        let obj = {
+          Id: id,
+          Subject: value.Subject,
+          Content: value.Content,
+          Read: value.Read,
+          Date: value.Date,
+          Trash: value.Trash,
+          From: value.From,
+          To: value.To,
+          Stared: value.Stared,
+          Important: false,
+        };
+        arry.push(obj);
+      });
+      arry.sort(
+        (a, b) => Date.parse(new Date(b.Date)) - Date.parse(new Date(a.Date))
+      );
+    }
     setisLoading(false);
-    setUnread(inboxCounter);
     return arry;
+  };
+
+  const inboxdata = (data) => {
+    console.log({data:data})
+    return data.filter((item) => item.To === AuthCtx.email);
+  };
+
+  const sentdata = (data) => {
+    return data.filter((item) => item.From === AuthCtx.email);
   };
 
   const FetchEmails = async () => {
@@ -56,7 +65,9 @@ function Home() {
     if (response.ok) {
       const data = await response.json();
       console.log({ successdata: data });
-      setdata(modifyArrayForInbox(data));
+      let modifiedData = modifyData(data);
+      setInboxData(inboxdata(modifiedData));
+      setSentData(sentdata(modifiedData));
       return data;
     } else {
       const data = await response.json();
@@ -66,13 +77,16 @@ function Home() {
   };
 
   const DeleteEmail = async (Id) => {
-    const response = await fetch(`https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${Id}.json`,{
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${Id}.json`,
+      {
+        method: "DELETE",
+      }
+    );
     console.log({ response: response });
     if (response.ok) {
-      console.log("deleted")
-      FetchEmails()
+      console.log("deleted");
+      FetchEmails();
     } else {
       alert("Error");
     }
@@ -81,24 +95,37 @@ function Home() {
   return (
     <div className="container bootdey my-2">
       <div className="email-app">
-        <Sidebar Unread={Unread} />
+        <Sidebar inbox={InboxData.length} />
         <Switch>
           <Route path="/inbox" exact>
             <EmailsList
-              data={data}
+              data={InboxData}
               isLoading={isLoading}
               FetchEmails={FetchEmails}
               DeleteEmail={DeleteEmail}
+              type={"inbox"}
             />
           </Route>
           <Route path="/inbox/:id" exact>
-            <ReadEmail data={data} />
+            <ReadEmail data={InboxData} type={"sent"} />
+          </Route>
+          <Route path="/sent" exact>
+            <EmailsList
+              data={SentData}
+              isLoading={isLoading}
+              FetchEmails={FetchEmails}
+              DeleteEmail={DeleteEmail}
+              type={"sent"}
+            />
+          </Route>
+          <Route path="/sent/:id" exact>
+            <ReadEmail data={SentData} type={"sent"} />
           </Route>
           <Route path="/compose">
             <Compose />
           </Route>
           <Route path="/">
-            <Redirect to='/inbox'/>;
+            <Redirect to="/inbox" />;
           </Route>
         </Switch>
       </div>
