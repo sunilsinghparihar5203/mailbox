@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect, useCallback,useMemo  } from "react";
 import { AuthContext } from "../Context/Context";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import Sidebar from "../UI/Sidebar";
@@ -10,22 +10,28 @@ import ReadEmail from "./ReadEmail";
 function Home() {
   const [InboxData, setInboxData] = useState([]);
   const [SentData, setSentData] = useState([]);
+  const [InboxDataUnread, setInboxDataUnread] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const AuthCtx = useContext(AuthContext);
   const history = useHistory();
-  if (!AuthCtx.isLoggedIn) {
-    history.push("/login");
-  }
-
-  const modifyData = (obj) => {
+  useEffect(() => {
+    if (!AuthCtx.isLoggedIn) {
+      history.push("/login");
+    }
+  }, [AuthCtx.isLoggedIn, history]);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      FetchEmails();
+      console.log("fething data")
+    }, 2000);
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  const modifyData = useCallback((obj) => {
     let arry = [];
-    let inboxCounter = 0;
     if (obj) {
       Object.entries(obj).map((item) => {
         let [id, value] = item;
-        if (value.Read !== true) {
-          inboxCounter++;
-        }
         let obj = {
           Id: id,
           Subject: value.Subject,
@@ -46,18 +52,23 @@ function Home() {
     }
     setisLoading(false);
     return arry;
-  };
+  },[]);
 
-  const inboxdata = (data) => {
-    console.log({data:data})
+  const inboxdata = useCallback((data) => {
+    console.log({ data: data });
     return data.filter((item) => item.To === AuthCtx.email);
-  };
+  },[AuthCtx.email]);
+  
+  const inboxdataUnread = useCallback((data) => {
+    console.log({ data: data });
+    return data.filter((item) => item.To === AuthCtx.email && item.Read === false);
+  },[AuthCtx.email]);
 
-  const sentdata = (data) => {
+  const sentdata = useCallback((data) => {
     return data.filter((item) => item.From === AuthCtx.email);
-  };
+  },[AuthCtx.email]);;
 
-  const FetchEmails = async () => {
+  const FetchEmails =useCallback(async () => {
     const response = await fetch(
       `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`
     );
@@ -68,13 +79,14 @@ function Home() {
       let modifiedData = modifyData(data);
       setInboxData(inboxdata(modifiedData));
       setSentData(sentdata(modifiedData));
+      setInboxDataUnread(inboxdataUnread(modifiedData))
       return data;
     } else {
       const data = await response.json();
       console.log({ Errordata: data });
       alert("Error");
     }
-  };
+  },[]);
 
   const DeleteEmail = async (Id) => {
     const response = await fetch(
@@ -95,7 +107,7 @@ function Home() {
   return (
     <div className="container bootdey my-2">
       <div className="email-app">
-        <Sidebar inbox={InboxData.length} />
+        <Sidebar inbox={InboxDataUnread.length} />
         <Switch>
           <Route path="/inbox" exact>
             <EmailsList
