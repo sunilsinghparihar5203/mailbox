@@ -1,6 +1,8 @@
 import React from "react";
 import { Form, ListGroup, Row, Col } from "react-bootstrap";
 import { Link, useRouteMatch } from "react-router-dom";
+import { AiFillDelete } from "react-icons/ai";
+
 import classes from "./Email.module.css";
 function Email(props) {
   let date = !!props.Date
@@ -20,15 +22,25 @@ function Email(props) {
   let timeDisplay = day === today ? time : date;
 
   const match = useRouteMatch();
+
+  const DeleteHandler = () =>{
+    props.DeleteEmail(props.Id);
+  }
+  
   return (
     <ListGroup.Item>
       <Row>
         <Col xs={1}>
           <Row>
-            <Col xs={6}>
+            <Col xs={4}>
               <Form.Check inline type="checkbox" />{" "}
             </Col>
-            <Col xs={6} style={{ color: "blue" }}>
+            <Col xs={4} style={{ color: "blue" }}>
+              <AiFillDelete
+                onClick={DeleteHandler} style={{ cursor: "pointer",color:'red' }}
+              />
+            </Col>
+            <Col xs={4} style={{ color: "blue" }}>
               {!props.Read && <Dot />}
             </Col>
           </Row>

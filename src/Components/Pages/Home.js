@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../Context/Context";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory,Redirect } from "react-router-dom";
 import Sidebar from "../UI/Sidebar";
 import Compose from "../UI/Compose";
 import "./Home.css";
@@ -65,6 +65,19 @@ function Home() {
     }
   };
 
+  const DeleteEmail = async (Id) => {
+    const response = await fetch(`https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails/${Id}.json`,{
+      method: "DELETE",
+    });
+    console.log({ response: response });
+    if (response.ok) {
+      console.log("deleted")
+      FetchEmails()
+    } else {
+      alert("Error");
+    }
+  };
+
   return (
     <div className="container bootdey my-2">
       <div className="email-app">
@@ -75,6 +88,7 @@ function Home() {
               data={data}
               isLoading={isLoading}
               FetchEmails={FetchEmails}
+              DeleteEmail={DeleteEmail}
             />
           </Route>
           <Route path="/inbox/:id" exact>
@@ -84,11 +98,7 @@ function Home() {
             <Compose />
           </Route>
           <Route path="/">
-            <EmailsList
-              data={data}
-              isLoading={isLoading}
-              FetchEmails={FetchEmails}
-            />
+            <Redirect to='/inbox'/>;
           </Route>
         </Switch>
       </div>

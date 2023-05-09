@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Email from "./Email";
 import { ListGroup, Row, Col } from "react-bootstrap";
 
-function EmailsList({ data, isLoading, FetchEmails }) {
+function EmailsList({ data, isLoading, FetchEmails,DeleteEmail }) {
   useEffect(() => {
     FetchEmails();
   }, []);
@@ -24,6 +24,7 @@ function EmailsList({ data, isLoading, FetchEmails }) {
                     Read={item.Read}
                     Date={item.Date}
                     Id={item.Id}
+                    DeleteEmail={DeleteEmail}
                   />
                 );
               })}
