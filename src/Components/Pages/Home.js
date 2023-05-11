@@ -6,87 +6,29 @@ import Compose from "../UI/Compose";
 import "./Home.css";
 import EmailsList from "./EmailsList";
 import ReadEmail from "./ReadEmail";
+import useFetchData from "../../Hooks/useFetchData";
 
 function Home() {
-  const [InboxData, setInboxData] = useState([]);
-  const [SentData, setSentData] = useState([]);
-  const [InboxDataUnread, setInboxDataUnread] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
   const AuthCtx = useContext(AuthContext);
   const history = useHistory();
+
+  const fetchedData = useFetchData()
+
+  const { isLoading,myData,Error,InboxData,SentData,InboxDataUnread,fetchRequest} = fetchedData;
+
   useEffect(() => {
     if (!AuthCtx.isLoggedIn) {
       history.push("/login");
     }
   }, [AuthCtx.isLoggedIn, history]);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
-      FetchEmails();
+      fetchRequest();
       console.log("fething data")
-    }, 2000);
+    }, 3000);
     return () => clearInterval(intervalId);
   }, []);
-  
-  const modifyData = useCallback((obj) => {
-    let arry = [];
-    if (obj) {
-      Object.entries(obj).map((item) => {
-        let [id, value] = item;
-        let obj = {
-          Id: id,
-          Subject: value.Subject,
-          Content: value.Content,
-          Read: value.Read,
-          Date: value.Date,
-          Trash: value.Trash,
-          From: value.From,
-          To: value.To,
-          Stared: value.Stared,
-          Important: false,
-        };
-        arry.push(obj);
-      });
-      arry.sort(
-        (a, b) => Date.parse(new Date(b.Date)) - Date.parse(new Date(a.Date))
-      );
-    }
-    setisLoading(false);
-    return arry;
-  },[]);
-
-  const inboxdata = useCallback((data) => {
-    console.log({ data: data });
-    return data.filter((item) => item.To === AuthCtx.email);
-  },[AuthCtx.email]);
-  
-  const inboxdataUnread = useCallback((data) => {
-    console.log({ data: data });
-    return data.filter((item) => item.To === AuthCtx.email && item.Read === false);
-  },[AuthCtx.email]);
-
-  const sentdata = useCallback((data) => {
-    return data.filter((item) => item.From === AuthCtx.email);
-  },[AuthCtx.email]);;
-
-  const FetchEmails =useCallback(async () => {
-    const response = await fetch(
-      `https://mailbox-f3786-default-rtdb.asia-southeast1.firebasedatabase.app/emails.json`
-    );
-    console.log({ response: response });
-    if (response.ok) {
-      const data = await response.json();
-      console.log({ successdata: data });
-      let modifiedData = modifyData(data);
-      setInboxData(inboxdata(modifiedData));
-      setSentData(sentdata(modifiedData));
-      setInboxDataUnread(inboxdataUnread(modifiedData))
-      return data;
-    } else {
-      const data = await response.json();
-      console.log({ Errordata: data });
-      alert("Error");
-    }
-  },[]);
 
   const DeleteEmail = async (Id) => {
     const response = await fetch(
@@ -98,7 +40,7 @@ function Home() {
     console.log({ response: response });
     if (response.ok) {
       console.log("deleted");
-      FetchEmails();
+      fetchRequest();
     } else {
       alert("Error");
     }
@@ -113,7 +55,7 @@ function Home() {
             <EmailsList
               data={InboxData}
               isLoading={isLoading}
-              FetchEmails={FetchEmails}
+              FetchEmails={fetchRequest}
               DeleteEmail={DeleteEmail}
               type={"inbox"}
             />
@@ -125,7 +67,7 @@ function Home() {
             <EmailsList
               data={SentData}
               isLoading={isLoading}
-              FetchEmails={FetchEmails}
+              FetchEmails={fetchRequest}
               DeleteEmail={DeleteEmail}
               type={"sent"}
             />
