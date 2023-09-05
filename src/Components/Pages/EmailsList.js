@@ -8,7 +8,7 @@ function EmailsList({ data, isLoading, FetchEmails,DeleteEmail }) {
   }, []);
   return (
     <div className="container-fluid m-2">
-      <p>Inbox</p>
+      {/* <p>Inbox</p> */}
       {isLoading && <p>Loading..</p>}
       {!isLoading && data.length === 0 && <p>No Mail Available</p>}
       {!isLoading && data.length > 0 && (

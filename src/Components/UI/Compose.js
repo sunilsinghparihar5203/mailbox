@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { Button, Form } from "react-bootstrap";
-import { EditorState,convertToRaw } from "draft-js";
+import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "../Pages/Home.css";
 import { AuthContext } from "../Context/Context";
+import { convertFromHTML } from "draft-js";
 function Compose() {
   const emailRef = useRef();
   const subjRef = useRef();
@@ -15,7 +16,7 @@ function Compose() {
   );
 
   const [convertedContent, setConvertedContent] = useState(null);
-
+  
   useEffect(() => {
     let html = convertToHTML(editorState.getCurrentContent());
     setConvertedContent(html);

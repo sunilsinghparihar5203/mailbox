@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 function ReadEmail(props) {
   const { id } = useParams();
+  const [plainText, setPlainText] = useState('');
+
   const values = props.data.find((ObjId) => ObjId.Id === id);
   useEffect(() => {
     UpdateEmailToRead(values, id);
+    const div = document.createElement('div');
+    div.innerHTML = values.Content;
+    const plainText = div.textContent || div.innerText;
+    setPlainText(plainText);
   }, []);
 
   const UpdateEmailToRead = async (values, ID) => {
@@ -35,7 +41,7 @@ function ReadEmail(props) {
         <Row>
           <Col xs={8}>{values.From}</Col>
           <Col xs={4}>{values.Date}</Col>
-          <Col xs={12}>{values.Content}</Col>
+          <Col xs={12}>{plainText}</Col>
         </Row>
       </Container>
     </>

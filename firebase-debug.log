@@ -1,0 +1,44 @@
+[debug] [2023-05-23T17:47:55.806Z] ----------------------------------------------------------------------
+[debug] [2023-05-23T17:47:55.811Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sunil\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2023-05-23T17:47:55.812Z] CLI Version:   12.1.0
+[debug] [2023-05-23T17:47:55.813Z] Platform:      win32
+[debug] [2023-05-23T17:47:55.813Z] Node Version:  v18.14.2
+[debug] [2023-05-23T17:47:55.815Z] Time:          Tue May 23 2023 23:17:55 GMT+0530 (India Standard Time)
+[debug] [2023-05-23T17:47:55.815Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-05-23T17:47:55.979Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-05-23T17:47:55.980Z] > authorizing via signed-in user (sunilsinghparihar5203@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Sharpnar\React\mailbox
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2023-05-23T17:48:13.068Z] Using project from CLI flag: mailbox-f3786
+[debug] [2023-05-23T17:48:13.078Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/mailbox-f3786 [none]
+[debug] [2023-05-23T17:48:13.922Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/mailbox-f3786 200
+[debug] [2023-05-23T17:48:13.923Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/mailbox-f3786 {"projectId":"mailbox-f3786","projectNumber":"299397839966","displayName":"mailbox","name":"projects/mailbox-f3786","resources":{"hostingSite":"mailbox-f3786","realtimeDatabaseInstance":"mailbox-f3786-default-rtdb"},"state":"ACTIVE","etag":"1_674c3ad4-8c36-42cc-a1ed-971ea1942d4f"}
+[info] i  Using project mailbox-f3786 (mailbox) 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
